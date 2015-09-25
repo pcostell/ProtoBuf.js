@@ -1182,10 +1182,16 @@
                 test.strictEqual(myOneOf.id, null);
                 var bb = myOneOf.encode().compact();
                 test.strictEqual(bb.toString("debug"), "<12 02 6D 65>"); // id 2, wt 2, len 2
-                myOneOf = MyOneOf.decode(bb);
                 test.strictEqual(myOneOf.my_oneof, "name");
                 test.strictEqual(myOneOf.name, "me");
                 test.strictEqual(myOneOf.id, null);
+                bb = MyOneOf.encode({
+                    id: 0
+                });
+                myOneOf = MyOneOf.decode(bb)
+                test.strictEqual(myOneOf.my_oneof, "id");
+                test.strictEqual(myOneOf.name, null);
+                test.strictEqual(myOneOf.id, 0);
             } catch (e) {
                 fail(e);
             }
@@ -1839,6 +1845,23 @@
             test.strictEqual(testMsg.field_enum, 42);
 
             test.done();
+        },
+
+        "mapOneof": function(test) {
+            var builder = ProtoBuf.loadProtoFile(__dirname+"/oneof.proto"),
+                Outer = builder.build("Outer");
+            var bb = Outer.encode({
+                inner: {
+                    test: {
+                        id: 0
+                    }
+                }
+            });
+            var outer = Outer.decode(bb);
+            var map = outer.inner.map;
+            test.strictEqual(map.test.my_oneof, "id");
+            test.strictEqual(map.test.id, 0);
+            test.strictEqual(map.test.name, null);
         },
 
         "mapContainer": function(test) {
