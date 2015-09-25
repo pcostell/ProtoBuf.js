@@ -1859,9 +1859,9 @@
             });
             var outer = Outer.decode(bb);
             var map = outer.inner.map;
-            test.strictEqual(map.test.my_oneof, "id");
-            test.strictEqual(map.test.id, 0);
-            test.strictEqual(map.test.name, null);
+            test.strictEqual(map.test.value.my_oneof, "id");
+            test.strictEqual(map.test.value.id, 0);
+            test.strictEqual(map.test.value.name, null);
         },
 
         "mapContainer": function(test) {
