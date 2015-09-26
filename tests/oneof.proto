@@ -4,3 +4,7 @@ message MyOneOf {
         string name = 2;
     }
 }
+
+message Outer {
+    map<string, MyOneOf> inner = 1;
+}

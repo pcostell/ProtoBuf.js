@@ -1182,10 +1182,16 @@
                 test.strictEqual(myOneOf.id, null);
                 var bb = myOneOf.encode().compact();
                 test.strictEqual(bb.toString("debug"), "<12 02 6D 65>"); // id 2, wt 2, len 2
-                myOneOf = MyOneOf.decode(bb);
                 test.strictEqual(myOneOf.my_oneof, "name");
                 test.strictEqual(myOneOf.name, "me");
                 test.strictEqual(myOneOf.id, null);
+                bb = MyOneOf.encode({
+                    id: 0
+                });
+                myOneOf = MyOneOf.decode(bb)
+                test.strictEqual(myOneOf.my_oneof, "id");
+                test.strictEqual(myOneOf.name, null);
+                test.strictEqual(myOneOf.id, 0);
             } catch (e) {
                 fail(e);
             }
@@ -1838,6 +1844,53 @@
             testMsg = Test.decode(encoded);
             test.strictEqual(testMsg.field_enum, 42);
 
+            test.done();
+        },
+        "mapOneof": function(test) {
+            var builder = ProtoBuf.loadProtoFile(__dirname+"/oneof.proto"),
+                Outer = builder.build("Outer");
+            var bb = Outer.encode({
+                inner: {
+                    isDefault: {
+                        id: 0,
+                    },
+                    isNotDefault: {
+                        id: 1,
+                    }
+                }
+            });
+            var outer = Outer.decode(bb);
+            var map = outer.inner.map;
+            test.strictEqual(map.isDefault.value.my_oneof, "id");
+            test.strictEqual(map.isDefault.value.id, 0);
+            test.strictEqual(map.isDefault.value.name, null);
+            test.strictEqual(map.isNotDefault.value.my_oneof, "id");
+            test.strictEqual(map.isNotDefault.value.id, 1);
+            test.strictEqual(map.isNotDefault.value.name, null);
+            test.done();
+        },
+
+        "mapOneofProto3": function(test) {
+            var builder = ProtoBuf.loadProtoFile(__dirname+"/proto3.proto"),
+                Outer = builder.build("test.Outer");
+            var bb = Outer.encode({
+                inner: {
+                    isDefault: {
+                        id: 0,
+                    },
+                    isNotDefault: {
+                        id: 1,
+                    }
+                }
+            });
+            var outer = Outer.decode(bb);
+            var map = outer.inner.map;
+            test.strictEqual(map.isDefault.value.my_oneof, "id");
+            test.strictEqual(map.isDefault.value.id, 0);
+            test.strictEqual(map.isDefault.value.name, null);
+            test.strictEqual(map.isNotDefault.value.my_oneof, "id");
+            test.strictEqual(map.isNotDefault.value.id, 1);
+            test.strictEqual(map.isNotDefault.value.name, null);
             test.done();
         },
 
