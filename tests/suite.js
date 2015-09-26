@@ -1846,22 +1846,52 @@
 
             test.done();
         },
-
         "mapOneof": function(test) {
             var builder = ProtoBuf.loadProtoFile(__dirname+"/oneof.proto"),
                 Outer = builder.build("Outer");
             var bb = Outer.encode({
                 inner: {
-                    test: {
-                        id: 0
+                    isDefault: {
+                        id: 0,
+                    },
+                    isNotDefault: {
+                        id: 1,
                     }
                 }
             });
             var outer = Outer.decode(bb);
             var map = outer.inner.map;
-            test.strictEqual(map.test.value.my_oneof, "id");
-            test.strictEqual(map.test.value.id, 0);
-            test.strictEqual(map.test.value.name, null);
+            test.strictEqual(map.isDefault.value.my_oneof, "id");
+            test.strictEqual(map.isDefault.value.id, 0);
+            test.strictEqual(map.isDefault.value.name, null);
+            test.strictEqual(map.isNotDefault.value.my_oneof, "id");
+            test.strictEqual(map.isNotDefault.value.id, 1);
+            test.strictEqual(map.isNotDefault.value.name, null);
+            test.done();
+        },
+
+        "mapOneofProto3": function(test) {
+            var builder = ProtoBuf.loadProtoFile(__dirname+"/proto3.proto"),
+                Outer = builder.build("test.Outer");
+            var bb = Outer.encode({
+                inner: {
+                    isDefault: {
+                        id: 0,
+                    },
+                    isNotDefault: {
+                        id: 1,
+                    }
+                }
+            });
+            var outer = Outer.decode(bb);
+            var map = outer.inner.map;
+            test.strictEqual(map.isDefault.value.my_oneof, "id");
+            test.strictEqual(map.isDefault.value.id, 0);
+            test.strictEqual(map.isDefault.value.name, null);
+            test.strictEqual(map.isNotDefault.value.my_oneof, "id");
+            test.strictEqual(map.isNotDefault.value.id, 1);
+            test.strictEqual(map.isNotDefault.value.name, null);
+            test.done();
         },
 
         "mapContainer": function(test) {

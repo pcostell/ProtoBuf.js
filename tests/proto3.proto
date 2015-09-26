@@ -5,3 +5,14 @@ package test;
 message Foo {
   int32 optional_int32 = 1;
 }
+
+message MyOneOf {
+    oneof my_oneof {
+        uint32 id = 1;
+        string name = 2;
+    }
+}
+
+message Outer {
+    map<string, MyOneOf> inner = 1;
+}
